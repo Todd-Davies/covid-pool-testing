@@ -44,8 +44,17 @@ def generate_samples(k):
 ```python
 # Find how many tests we'll need to do for a given pool of people
 def count_tests(pool):
-    if len(pool) == 1: # With only one person in the pool, we just need one test
-        return 1
+    if len(pool) == 3: # With only three people left, we can optimise
+        first_two = [pool[0], pool[1]] # Test the first two
+        if any(first_two): # If they're positive, we need to test them, and the third
+            return count_tests(first_two) + 2
+        else: # If it was negative, assume the third one to be positive
+            return 1
+    if len(pool) == 2: # With only two person in the pool...
+        if pool[0]: # If the first one is positive, we also need to test the other
+            return 2
+        else:       # Otherwise, we can assume the second to be positive
+            return 1;
     if any(pool):      # If any of the samples are true, we need to test further
         first_half = pool[:len(pool)//2]  # Get the first half
         second_half = pool[len(pool)//2:] # Get the second half
@@ -69,7 +78,7 @@ expected_tests = cumulative_tests / iterations
 print(f'Expected number of tests per pool: {expected_tests:.1f}')
 ```
 
-    Expected number of tests per pool: 6.9
+    Expected number of tests per pool: 5.9
 
 
 
@@ -83,6 +92,11 @@ times_more_results = 1 / (1 - reduction)
 print(f'{times_more_results:.2f}x more people can be tested')
 ```
 
-    Reduction in the number of test kits required: 75.3%
-    4.04x more people can be tested
+    Reduction in the number of test kits required: 79.0%
+    4.77x more people can be tested
 
+
+
+```python
+
+```
